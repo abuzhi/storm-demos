@@ -12,7 +12,7 @@
     <artifactId>hbase</artifactId>
     <packaging>jar</packaging>
 
-    <name>hbase</name>
+    <name>hbase-demo</name>
     <url>http://maven.apache.org</url>
 
     <properties>

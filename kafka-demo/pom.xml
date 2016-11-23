@@ -11,7 +11,7 @@
     <artifactId>kafka</artifactId>
     <packaging>jar</packaging>
 
-    <name>kafka</name>
+    <name>kafka-demo</name>
     <url>http://maven.apache.org</url>
 
     <properties>
