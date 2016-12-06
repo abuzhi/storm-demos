@@ -23,8 +23,33 @@
         <hadoop.version>2.7.2</hadoop.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>io.spring.repo.maven.release</id>
+            <url>http://repo.spring.io/release/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>io.spring.repo.maven.release</id>
+            <url>http://repo.spring.io/release/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.kafka</groupId>
+                <artifactId>spring-kafka</artifactId>
+                <version>1.1.1.RELEASE</version>
+            </dependency>
+
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
@@ -54,16 +79,16 @@
                         <artifactId>logback-core</artifactId>
                     </exclusion>
                     <!--<exclusion>-->
-                        <!--<groupId>org.clojure</groupId>-->
-                        <!--<artifactId>clojure</artifactId>-->
+                    <!--<groupId>org.clojure</groupId>-->
+                    <!--<artifactId>clojure</artifactId>-->
                     <!--</exclusion>-->
                 </exclusions>
             </dependency>
 
             <!--<dependency>-->
-                <!--<groupId>org.clojure</groupId>-->
-                <!--<artifactId>clojure</artifactId>-->
-                <!--<version>1.8.0</version>-->
+            <!--<groupId>org.clojure</groupId>-->
+            <!--<artifactId>clojure</artifactId>-->
+            <!--<version>1.8.0</version>-->
             <!--</dependency>-->
 
             <dependency>
@@ -100,8 +125,8 @@
                         <artifactId>logback-core</artifactId>
                     </exclusion>
                     <!--<exclusion>-->
-                        <!--<groupId>org.clojure</groupId>-->
-                        <!--<artifactId>clojure</artifactId>-->
+                    <!--<groupId>org.clojure</groupId>-->
+                    <!--<artifactId>clojure</artifactId>-->
                     <!--</exclusion>-->
                 </exclusions>
             </dependency>
@@ -120,8 +145,8 @@
                         <artifactId>zookeeper</artifactId>
                     </exclusion>
                     <!--<exclusion>-->
-                        <!--<groupId>org.clojure</groupId>-->
-                        <!--<artifactId>clojure</artifactId>-->
+                    <!--<groupId>org.clojure</groupId>-->
+                    <!--<artifactId>clojure</artifactId>-->
                     <!--</exclusion>-->
                 </exclusions>
             </dependency>

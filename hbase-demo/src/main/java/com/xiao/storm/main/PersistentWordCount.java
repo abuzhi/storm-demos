@@ -13,7 +13,6 @@ import org.apache.storm.tuple.Fields;
 /**
  * Created by xiaoliang
  * 2016/9/28 17:08
- *
  * @Version 1.0
  */
 public class PersistentWordCount {
@@ -43,7 +42,6 @@ public class PersistentWordCount {
         builder.setSpout(WORD_SPOUT, spout, 1);
         builder.setBolt(COUNT_BOLT, bolt, 1).shuffleGrouping(WORD_SPOUT);
         builder.setBolt(HBASE_BOLT, hbase, 1).fieldsGrouping(COUNT_BOLT, new Fields("word"));
-
 
         if (args.length == 0) {
             LocalCluster cluster = new LocalCluster();
