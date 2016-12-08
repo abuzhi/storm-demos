@@ -32,15 +32,6 @@
             </snapshots>
         </repository>
     </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>io.spring.repo.maven.release</id>
-            <url>http://repo.spring.io/release/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
     <dependencyManagement>
         <dependencies>
@@ -49,11 +40,25 @@
                 <artifactId>spring-kafka</artifactId>
                 <version>1.1.1.RELEASE</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>4.3.3.RELEASE</version>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>3.4.8</version>
+            </dependency>
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>2.11.8</version>
             </dependency>
 
             <!--storm -->
@@ -78,10 +83,10 @@
                         <groupId>ch.qos.logback</groupId>
                         <artifactId>logback-core</artifactId>
                     </exclusion>
-                    <!--<exclusion>-->
-                    <!--<groupId>org.clojure</groupId>-->
-                    <!--<artifactId>clojure</artifactId>-->
-                    <!--</exclusion>-->
+                    <exclusion>
+                        <groupId>org.clojure</groupId>
+                        <artifactId>clojure</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -155,6 +160,26 @@
                 <groupId>org.apache.storm</groupId>
                 <artifactId>storm-redis</artifactId>
                 <version>${storm.redis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka_2.11</artifactId>
+                <version>0.10.1.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.kafka</groupId>
+                        <artifactId>kafka-clients</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>0.10.1.0</version>
             </dependency>
 
             <!-- slf4j + logback -->
