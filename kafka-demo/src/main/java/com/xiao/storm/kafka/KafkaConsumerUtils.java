@@ -10,6 +10,8 @@ import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -29,13 +31,15 @@ import java.util.Properties;
  *
  * @Version 1.0
  */
-public class KafkaProducerUtils {
+public class KafkaConsumerUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerUtils.class);
 
     private static final String CONFIG_FILE = "config/kafka.properties";
     private static Properties properties = null;
-    private static Producer producer = null;
+    private static Consumer consumer = null;
 
-    private KafkaProducerUtils(){
+    private KafkaConsumerUtils(){
 
     }
 
@@ -55,22 +59,23 @@ public class KafkaProducerUtils {
         }
     }
 
-    public static Producer producer(){
-        if(producer==null){
-            producer = new KafkaProducer<>(producerProps());
+    public static Consumer consumer(){
+        if(consumer==null){
+            consumer = new KafkaConsumer(consumerProps());
         }
-        return producer;
+        return consumer;
     }
 
-    private static Map<String, Object> producerProps() {
+    private static Map<String, Object> consumerProps() {
         Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getProperty("producer.bootstrap.servers"));
-        props.put(ProducerConfig.RETRIES_CONFIG, 3);
-        props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
-        props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
-        props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, properties.getProperty("producer.key.serializer"));
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, properties.getProperty("producer.value.serializer"));
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getProperty("consumer.bootstrap.servers"));
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, properties.getProperty("consumer.group.id"));
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
+        props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, properties.getProperty("auto.offset.reset","latest"));
+        props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "15000");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, properties.getProperty("consumer.key.deserializer"));
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, properties.getProperty("consumer.value.deserializer"));
         return props;
     }
 }

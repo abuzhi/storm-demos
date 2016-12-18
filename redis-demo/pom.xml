@@ -7,6 +7,7 @@
     <version>1.0-SNAPSHOT</version>
     <name>redis-demo</name>
     <url>http://maven.apache.org</url>
+
     <parent>
         <artifactId>root</artifactId>
         <groupId>com.xiao.storm</groupId>
