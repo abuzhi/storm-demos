@@ -11,6 +11,9 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by xiaoliang
@@ -35,12 +38,34 @@ public class KafkaProducerUtilsTest {
 
     @Test
     public void testProducer() throws Exception {
+        KafkaProducerUtils.init();
         Producer<String,String> producer = KafkaProducerUtils.producer();
         int i =43;
         while(true){
             producer.send(new ProducerRecord<String, String>("test123","0","producer"+i));
+            System.out.println("producer"+i);
             i ++;
-            Thread.sleep(3000);
+            Thread.sleep(5000);
         }
+    }
+
+    @Test
+    public void testThread() throws Exception {
+        int taskNums = 1;
+        ExecutorService fixedThreadPool = Executors.newFixedThreadPool(taskNums);
+
+        for(int i = 0;i<taskNums;i++){
+            ProducerThread thread = new ProducerThread();
+            fixedThreadPool.execute(thread);
+        }
+
+        fixedThreadPool.shutdown();
+        try {
+            while (!fixedThreadPool.awaitTermination(1, TimeUnit.SECONDS)) {
+
+            }
+        } catch (InterruptedException e) {
+        }
+
     }
 }

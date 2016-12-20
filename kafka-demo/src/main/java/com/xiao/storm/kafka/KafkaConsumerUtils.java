@@ -3,21 +3,8 @@ package com.xiao.storm.kafka;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.IntegerDeserializer;
-import org.apache.kafka.common.serialization.IntegerSerializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.listener.KafkaMessageListenerContainer;
-import org.springframework.kafka.listener.config.ContainerProperties;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,20 +30,27 @@ public class KafkaConsumerUtils {
 
     }
 
-    static {
-        init();
-    }
-
-    private static void init(){
+    public static synchronized void init(String filepath){
         properties = new Properties();
         FileInputStream fis = null;
         try{
-            File pfile = new File(CONFIG_FILE);
+            String path = CONFIG_FILE;
+            if(filepath!=null && !"".equalsIgnoreCase(filepath)){
+                path = filepath;
+            }
+            File pfile = new File(path);
             fis = new FileInputStream(pfile);
             properties.load(fis);
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 默认文件
+     */
+    public static synchronized void init(){
+        init("");
     }
 
     public static Consumer consumer(){
@@ -73,7 +67,7 @@ public class KafkaConsumerUtils {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
         props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, properties.getProperty("auto.offset.reset","latest"));
-        props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "15000");
+//        props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "15000");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, properties.getProperty("consumer.key.deserializer"));
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, properties.getProperty("consumer.value.deserializer"));
         return props;

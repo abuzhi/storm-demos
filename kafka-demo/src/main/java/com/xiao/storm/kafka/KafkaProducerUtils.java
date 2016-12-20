@@ -1,21 +1,8 @@
 package com.xiao.storm.kafka;
 
-import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.IntegerDeserializer;
-import org.apache.kafka.common.serialization.IntegerSerializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.listener.KafkaMessageListenerContainer;
-import org.springframework.kafka.listener.config.ContainerProperties;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,20 +26,28 @@ public class KafkaProducerUtils {
 
     }
 
-    static {
-        init();
-    }
-
-    private static void init(){
+    public static synchronized void init(String filepath){
         properties = new Properties();
         FileInputStream fis = null;
         try{
-            File pfile = new File(CONFIG_FILE);
+            File tmp = new File("");
+            String path =tmp.getCanonicalPath()+"/"+ CONFIG_FILE;
+            if(filepath!=null && !"".equalsIgnoreCase(filepath)){
+                path = tmp.getCanonicalPath()+"/"+ filepath;
+            }
+            File pfile = new File(path);
             fis = new FileInputStream(pfile);
             properties.load(fis);
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 默认文件
+     */
+    public static synchronized void init(){
+        init("");
     }
 
     public static Producer producer(){

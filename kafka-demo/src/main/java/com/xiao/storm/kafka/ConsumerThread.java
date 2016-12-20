@@ -8,4 +8,5 @@ package com.xiao.storm.kafka;
  */
 public class ConsumerThread {
 
+
 }
