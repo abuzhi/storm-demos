@@ -12,10 +12,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <storm.version>1.0.2</storm.version>
-        <storm.hbase.version>1.0.2</storm.hbase.version>
-        <storm.kafka.version>1.0.2</storm.kafka.version>
-        <storm.redis.version>1.0.2</storm.redis.version>
+        <storm.version>1.1.1</storm.version>
+        <storm.hbase.version>1.1.1</storm.hbase.version>
+        <storm.kafka.version>1.1.1</storm.kafka.version>
+        <storm.redis.version>1.1.1</storm.redis.version>
 
         <logback.version>1.1.3</logback.version>
         <slf4j.version>1.7.12</slf4j.version>
@@ -66,35 +66,13 @@
                 <groupId>org.apache.storm</groupId>
                 <artifactId>storm-core</artifactId>
                 <version>${storm.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-log4j12</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.clojure</groupId>
-                        <artifactId>clojure</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
-            <!--<dependency>-->
-            <!--<groupId>org.clojure</groupId>-->
-            <!--<artifactId>clojure</artifactId>-->
-            <!--<version>1.8.0</version>-->
-            <!--</dependency>-->
+            <dependency>
+            <groupId>org.clojure</groupId>
+            <artifactId>clojure</artifactId>
+            <version>1.8.0</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -112,52 +90,17 @@
                 <groupId>org.apache.storm</groupId>
                 <artifactId>storm-hbase</artifactId>
                 <version>${storm.hbase.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-log4j12</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-core</artifactId>
-                    </exclusion>
-                    <!--<exclusion>-->
-                    <!--<groupId>org.clojure</groupId>-->
-                    <!--<artifactId>clojure</artifactId>-->
-                    <!--</exclusion>-->
-                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.storm</groupId>
                 <artifactId>storm-kafka</artifactId>
                 <version>${storm.kafka.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>slf4j-api</artifactId>
-                        <groupId>org.slf4j</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.zookeeper</groupId>
-                        <artifactId>zookeeper</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.kafka</groupId>
-                        <artifactId>kafka-clients</artifactId>
-                    </exclusion>
-                    <!--<exclusion>-->
-                    <!--<groupId>org.clojure</groupId>-->
-                    <!--<artifactId>clojure</artifactId>-->
-                    <!--</exclusion>-->
-                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.storm</groupId>
+                <artifactId>storm-kafka-client</artifactId>
+                <version>${storm.kafka.version}</version>
             </dependency>
 
             <dependency>
@@ -169,16 +112,6 @@
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka_2.11</artifactId>
                 <version>0.10.0.0</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.zookeeper</groupId>
-                        <artifactId>zookeeper</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.kafka</groupId>
-                        <artifactId>kafka-clients</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.kafka</groupId>
@@ -196,12 +129,6 @@
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
                 <version>3.4.8</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
 
@@ -210,12 +137,6 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -227,12 +148,6 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>${slf4j.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
         </dependencies>

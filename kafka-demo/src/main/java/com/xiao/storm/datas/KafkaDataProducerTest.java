@@ -8,7 +8,7 @@ package com.xiao.storm.datas;
  */
 public class KafkaDataProducerTest {
 
-    public void testProducerData() throws Exception {
+    public static void main(String[] args) {
         KafkaDataProducer producer = new KafkaDataProducer();
         producer.produceData("2016-12-20 11:11:11","2016-12-20 12:11:11");
     }

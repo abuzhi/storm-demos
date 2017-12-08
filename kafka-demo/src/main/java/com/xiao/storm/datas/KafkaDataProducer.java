@@ -23,8 +23,8 @@ public class KafkaDataProducer {
 
 
         DataEntity data = new DataEntity();
-        DataFactory.init("src/test/resources/datas.properties");
-        KafkaProducerUtils.init("config/kafka.properties");
+        DataFactory.init("kafka-demo/config/datas.properties");
+        KafkaProducerUtils.init("kafka-demo/config/kafka.properties");
         DateTime dateTime = new DateTime();
 
         while(true){
