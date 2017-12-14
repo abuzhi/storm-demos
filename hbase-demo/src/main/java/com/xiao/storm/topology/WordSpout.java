@@ -17,6 +17,7 @@
  */
 package com.xiao.storm.topology;
 
+import com.xiao.storm.common.utils.RandomUtil;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichSpout;
@@ -55,8 +56,7 @@ public class WordSpout implements IRichSpout {
     }
 
     public void nextTuple() {
-        final Random rand = new Random();
-        final String word = words[rand.nextInt(words.length)];
+        final String word = RandomUtil.randomString(10);
         this.collector.emit(new Values(word), UUID.randomUUID());
         Thread.yield();
     }

@@ -17,13 +17,17 @@
  */
 package com.xiao.storm.topology;
 
+import com.xiao.storm.common.utils.EncryptMD5;
+import com.xiao.storm.utils.Constant;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.BasicOutputCollector;
 import org.apache.storm.topology.IBasicBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
+import org.apache.storm.tuple.Values;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.storm.utils.Utils.tuple;
@@ -40,7 +44,14 @@ public class WordCounter implements IBasicBolt {
      * The HBaseBolt will handle incrementing the counter.
      */
     public void execute(Tuple input, BasicOutputCollector collector) {
-        collector.emit(tuple(input.getValues().get(0), 1));
+        String word = input.getStringByField("word");
+        String md5 = EncryptMD5.md5(word);
+        Map<String,String> contentMap = new HashMap<String, String>();;
+        contentMap.put("md5", md5);
+        contentMap.put("word", word);
+
+        Values values = new Values(md5,117,"zxyd",111,contentMap);
+        collector.emit(values);
     }
 
     public void cleanup() {
@@ -48,7 +59,7 @@ public class WordCounter implements IBasicBolt {
     }
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields("word", "count"));
+        declarer.declare(new Fields("md5",Constant.GAME_ID,Constant.GAME_NAME, Constant.GAME_BUSINESS, Constant.GAME_LOG_MAP));
     }
 
     @Override

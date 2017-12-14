@@ -10,56 +10,196 @@
     <name>root</name>
     <url>http://maven.apache.org</url>
 
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <storm.version>1.0.2</storm.version>
-        <storm.hbase.version>1.0.2</storm.hbase.version>
-        <storm.kafka.version>1.0.2</storm.kafka.version>
-        <storm.redis.version>1.0.2</storm.redis.version>
+        <!-- test framework -->
+        <junit.version>4.12</junit.version>
+        <mockito.version>2.2.22</mockito.version>
+        <easymock.version>3.3.1</easymock.version>
 
-        <logback.version>1.1.3</logback.version>
-        <slf4j.version>1.7.12</slf4j.version>
+        <!--storm hadoop -->
+        <storm.version>1.1.0</storm.version>
+        <storm.hdfs.version>1.0.3</storm.hdfs.version>
+        <kafka.version>0.11.0.0</kafka.version>
+        <hbase.version>1.2.0</hbase.version>
+        <flume.version>1.6.0</flume.version>
+        <hadoop.version>2.6.1</hadoop.version>
 
-        <hadoop.version>2.7.2</hadoop.version>
+        <!-- logback + slf4j-->
+        <logback.version>1.2.3</logback.version>
+        <slf4j.version>1.7.25</slf4j.version>
+
+        <!-- datasource -->
+        <jedis.version>2.9.0</jedis.version>
+        <fastjson.version>1.2.31</fastjson.version>
+
+        <!-- utils -->
+        <joda-time.version>2.9.6</joda-time.version>
+
+        <impala.jdbc.version>2.5.37</impala.jdbc.version>
+        <hive.jdbc.version>2.5.18.1050</hive.jdbc.version>
+
+        <!--spring -->
+        <spring.version>4.3.10.RELEASE</spring.version>
+
+        <!--maven plugins-->
+        <maven-war-plugin.version>3.2.0</maven-war-plugin.version>
+        <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+        <maven-compiler-jdk.version>1.8</maven-compiler-jdk.version>
+        <maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
+        <tomcat7-maven-plugin.version>2.0</tomcat7-maven-plugin.version>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>io.spring.repo.maven.release</id>
-            <url>http://repo.spring.io/release/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.kafka</groupId>
-                <artifactId>spring-kafka</artifactId>
-                <version>1.1.1.RELEASE</version>
-            </dependency>
+            <!-- spring framework -->
             <dependency>
                 <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>4.3.3.RELEASE</version>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
+
+            <!-- These dependencies provided by your local repo -->
+            <!--
+                安装到本地依赖
+                mvn install:install-file -Dfile=hive_metastore.jar -DgroupId=com.cloudera.impala.jdbc  -DartifactId=hive_metastore -Dversion=2.5.30 -Dpackaging=jar
+                mvn install:install-file -Dfile=hive_service.jar -DgroupId=com.cloudera.impala.jdbc  -DartifactId=hive_service -Dversion=2.5.30 -Dpackaging=jar
+                mvn install:install-file -Dfile=ImpalaJDBC41.jar -DgroupId=com.cloudera.impala.jdbc  -DartifactId=ImpalaJDBC41 -Dversion=2.5.30 -Dpackaging=jar
+                mvn install:install-file -Dfile=ql.jar -DgroupId=com.cloudera.impala.jdbc  -DartifactId=ql -Dversion=2.5.30 -Dpackaging=jar
+                mvn install:install-file -Dfile=TCLIServiceClient.jar -DgroupId=com.cloudera.impala.jdbc  -DartifactId=TCLIServiceClient -Dversion=2.5.30 -Dpackaging=jar
+
+                mvn install:install-file -Dfile=HiveJDBC41.jar -DgroupId=com.cloudera.hive.jdbc  -DartifactId=HiveJDBC41 -Dversion=2.5.18.1050 -Dpackaging=jar
+            -->
+            <dependency>
+                <groupId>com.cloudera.impala.jdbc</groupId>
+                <artifactId>hive_metastore</artifactId>
+                <version>${impala.jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cloudera.impala.jdbc</groupId>
+                <artifactId>hive_service</artifactId>
+                <version>${impala.jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cloudera.impala.jdbc</groupId>
+                <artifactId>impalajdbc41</artifactId>
+                <version>${impala.jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cloudera.impala.jdbc</groupId>
+                <artifactId>ql</artifactId>
+                <version>${impala.jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cloudera.impala.jdbc</groupId>
+                <artifactId>TCLIServiceClient</artifactId>
+                <version>${impala.jdbc.version}</version>
+            </dependency>
+
+            <!--<dependency>-->
+            <!--<groupId>com.cloudera.hive.jdbc</groupId>-->
+            <!--<artifactId>HiveJDBC41</artifactId>-->
+            <!--<version>${hive.jdbc.version}</version>-->
+            <!--</dependency>-->
+            <dependency>
+                <groupId>org.apache.thrift</groupId>
+                <artifactId>libthrift</artifactId>
+                <version>0.9.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.thrift</groupId>
+                <artifactId>libfb303</artifactId>
+                <version>0.9.3</version>
+            </dependency>
+            <!-- End of dependencies provided by your local repo -->
+            <dependency>
+                <groupId>org.apache.kudu</groupId>
+                <artifactId>kudu-client</artifactId>
+                <version>1.5.0</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>slf4j-api</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!--mysql connector -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.27</version>
+            </dependency>
+            <!-- oracle
+                mvn install:install-file -Dfile=ojdbc6.jar -DgroupId=com.oracle.jdbc  -DartifactId=ojdbc6 -Dversion=1.0 -Dpackaging=jar
+            -->
+            <!--<dependency>-->
+            <!--<groupId>com.oracle.jdbc</groupId>-->
+            <!--<artifactId>ojdbc6</artifactId>-->
+            <!--<version>1.0</version>-->
+            <!--</dependency>-->
+
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>11.2.0.4</version>
+            </dependency>
+
+            <!--jdk 8,7,6 -->
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP-java7</artifactId>
+                <version>2.4.12</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.phoenix</groupId>
+                <artifactId>phoenix-core</artifactId>
+                <version>4.7.0-HBase-1.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>sqlline</groupId>
+                        <artifactId>sqlline</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>sqlline</groupId>
+                <artifactId>sqlline</artifactId>
+                <version>1.1.9</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>jline</groupId>
+                        <artifactId>jline</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+
+            <!-- test framework-->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.12</version>
+                <version>${junit.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.apache.zookeeper</groupId>
-                <artifactId>zookeeper</artifactId>
-                <version>3.4.8</version>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.scala-lang</groupId>
-                <artifactId>scala-library</artifactId>
-                <version>2.11.8</version>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>${easymock.version}</version>
+                <scope>test</scope>
             </dependency>
+
 
             <!--storm -->
             <dependency>
@@ -68,107 +208,241 @@
                 <version>${storm.version}</version>
                 <exclusions>
                     <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-log4j12</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.clojure</groupId>
                         <artifactId>clojure</artifactId>
+                        <groupId>org.clojure</groupId>
                     </exclusion>
                 </exclusions>
             </dependency>
-
-            <!--<dependency>-->
-            <!--<groupId>org.clojure</groupId>-->
-            <!--<artifactId>clojure</artifactId>-->
-            <!--<version>1.8.0</version>-->
-            <!--</dependency>-->
-
             <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>18.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.zaxxer</groupId>
-                <artifactId>HikariCP</artifactId>
-                <version>2.4.7</version>
-                <scope>compile</scope>
+                <groupId>org.clojure</groupId>
+                <artifactId>clojure</artifactId>
+                <version>1.7.0</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.storm</groupId>
                 <artifactId>storm-hbase</artifactId>
-                <version>${storm.hbase.version}</version>
+                <version>${storm.version}</version>
                 <exclusions>
                     <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-log4j12</artifactId>
+                        <groupId>org.slf4j</groupId>
                     </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-core</artifactId>
-                    </exclusion>
-                    <!--<exclusion>-->
-                    <!--<groupId>org.clojure</groupId>-->
-                    <!--<artifactId>clojure</artifactId>-->
-                    <!--</exclusion>-->
                 </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.storm</groupId>
                 <artifactId>storm-kafka</artifactId>
-                <version>${storm.kafka.version}</version>
+                <version>${storm.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.kafka</groupId>
+                        <artifactId>kafka-clients</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.storm</groupId>
+                <artifactId>storm-kafka-client</artifactId>
+                <version>${storm.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.storm</groupId>
+                <artifactId>storm-redis</artifactId>
+                <version>${storm.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.storm</groupId>
+                <artifactId>storm-hdfs</artifactId>
+                <version>${storm.hdfs.version}</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>slf4j-api</artifactId>
                         <groupId>org.slf4j</groupId>
                     </exclusion>
                     <exclusion>
-                        <groupId>org.apache.zookeeper</groupId>
-                        <artifactId>zookeeper</artifactId>
+                        <artifactId>hadoop-client</artifactId>
+                        <groupId>org.apache.hadoop</groupId>
                     </exclusion>
-                    <!--<exclusion>-->
-                    <!--<groupId>org.clojure</groupId>-->
-                    <!--<artifactId>clojure</artifactId>-->
-                    <!--</exclusion>-->
+                    <exclusion>
+                        <artifactId>hadoop-hdfs</artifactId>
+                        <groupId>org.apache.hadoop</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.confluent</groupId>
+                        <artifactId>kafka-avro-serializer</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!--hbase -->
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-client</artifactId>
+                <version>${hbase.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>commons-io</artifactId>
+                        <groupId>commons-io</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!--hadoop -->
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-hdfs</artifactId>
+                <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>log4j</artifactId>
+                        <groupId>log4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-client</artifactId>
+                <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>log4j</artifactId>
+                        <groupId>log4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
             <dependency>
-                <groupId>org.apache.storm</groupId>
-                <artifactId>storm-redis</artifactId>
-                <version>${storm.redis.version}</version>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-common</artifactId>
+                <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>log4j</artifactId>
+                        <groupId>log4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
+
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>4.1.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-common</artifactId>
+                <version>1.2.2</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>log4j</artifactId>
+                        <groupId>log4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-protocol</artifactId>
+                <version>1.2.2</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>log4j</artifactId>
+                        <groupId>log4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.cloudera.htrace</groupId>
+                <artifactId>htrace-core</artifactId>
+                <version>2.05</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>2.6.1</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.apache.flume</groupId>
+                <artifactId>flume-ng-core</artifactId>
+                <version>${flume.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- kafka -->
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka_2.11</artifactId>
-                <version>0.10.0.0</version>
+                <version>${kafka.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.zookeeper</groupId>
                         <artifactId>zookeeper</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <groupId>org.slf4j</groupId>
                     </exclusion>
                     <exclusion>
                         <groupId>org.apache.kafka</groupId>
@@ -179,10 +453,190 @@
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>
-                <version>0.10.0.0</version>
+                <version>${kafka.version}</version>
             </dependency>
 
-            <!-- slf4j + logback -->
+            <!--zookeeper -->
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>3.4.10</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>jline</artifactId>
+                        <groupId>jline</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>2.5.5</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.jboss.netty</groupId>
+                        <artifactId>netty</artifactId>
+                    </exclusion>
+                </exclusions>
+
+            </dependency>
+            <dependency>
+                <groupId>com.101tec</groupId>
+                <artifactId>zkclient</artifactId>
+                <version>0.10</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>3.4.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>1.3.1</version>
+            </dependency>
+
+            <!-- apache -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>3.14</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>3.14</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-pool</groupId>
+                <artifactId>commons-pool</artifactId>
+                <version>1.6</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.3.6</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjrt</artifactId>
+                <version>1.8.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>1.8.5</version>
+            </dependency>
+
+            <!-- Jackson JSON Processor -->
+            <!--<dependency>-->
+            <!--<groupId>org.codehaus.jackson</groupId>-->
+            <!--<artifactId>jackson-mapper-asl</artifactId>-->
+            <!--<version>1.8.1</version>-->
+            <!--</dependency>-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.7.4</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.7.4</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.7.4</version>
+            </dependency>
+
+            <!-- utils -->
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda-time.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>2.8.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-net</groupId>
+                <artifactId>commons-net</artifactId>
+                <version>3.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.9</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.6</version>
+            </dependency>
+
+            <!--
+                log 框架用 slf4j + logback实现，防止出现冲突
+                1. 需要去除 log4j 相关依赖：log4j，slf4j-log4j12
+                2. 转化依赖中的log4j 实现到slf4j：log4j-over-slf4j
+                3. 转化依赖中commons-logging实现到slf4j : jcl-over-slf4j
+            -->
+            <!--slf4j 接口-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <!--logback 实现类-->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
@@ -196,7 +650,7 @@
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
+                <artifactId>log4j-over-slf4j</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
             <!-- 切换commons log 到slf4j桥接实现 -->
@@ -212,71 +666,69 @@
                 </exclusions>
             </dependency>
 
+
+            <!--apache -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-configuration2</artifactId>
+                <version>2.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-configuration</groupId>
+                <artifactId>commons-configuration</artifactId>
+                <version>1.10</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-lang</groupId>
+                        <artifactId>commons-lang</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- File Upload -->
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.9.2</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-dbutils</groupId>
+                <artifactId>commons-dbutils</artifactId>
+                <version>1.7</version>
+            </dependency>
+
+
         </dependencies>
     </dependencyManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.1-alpha-1</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-
-            <!--<plugin>-->
-            <!--<artifactId>maven-shade-plugin</artifactId>-->
-            <!--<version>2.4.2</version>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<phase>package</phase>-->
-            <!--<goals>-->
-            <!--<goal>shade</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-            <!--<transformers>-->
-            <!--<transformer-->
-            <!--implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">-->
-            <!--<manifestEntries>-->
-            <!--<Main-Class>com.xiao.hadoop.demo.RunMain</Main-Class>-->
-            <!--</manifestEntries>-->
-            <!--</transformer>-->
-            <!--&lt;!&ndash;<transformer&ndash;&gt;-->
-            <!--&lt;!&ndash;implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">&ndash;&gt;-->
-            <!--&lt;!&ndash;<resource>META-INF/spring.handlers</resource>&ndash;&gt;-->
-            <!--&lt;!&ndash;</transformer>&ndash;&gt;-->
-            <!--&lt;!&ndash;<transformer&ndash;&gt;-->
-            <!--&lt;!&ndash;implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">&ndash;&gt;-->
-            <!--&lt;!&ndash;<resource>META-INF/spring.schemas</resource>&ndash;&gt;-->
-            <!--&lt;!&ndash;</transformer>&ndash;&gt;-->
-            <!--&lt;!&ndash;<transformer&ndash;&gt;-->
-            <!--&lt;!&ndash;implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">&ndash;&gt;-->
-            <!--&lt;!&ndash;<resource>logback.xml</resource>&ndash;&gt;-->
-            <!--&lt;!&ndash;</transformer>&ndash;&gt;-->
-            <!--</transformers>-->
-            <!--</configuration>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
-        </plugins>
-    </build>
 
 </project>
