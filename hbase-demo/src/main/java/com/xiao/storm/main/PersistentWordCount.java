@@ -1,8 +1,5 @@
 package com.xiao.storm.main;
 
-import com.xiao.storm.common.utils.FileUtils;
-import com.xiao.storm.topology.HbaseFilterLogCommBolt;
-import com.xiao.storm.topology.TestBolt;
 import com.xiao.storm.topology.WordCounter;
 import com.xiao.storm.topology.WordSpout;
 import org.apache.storm.Config;
@@ -12,8 +9,6 @@ import org.apache.storm.hbase.bolt.HBaseBolt;
 import org.apache.storm.hbase.bolt.mapper.SimpleHBaseMapper;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
-
-import java.util.Properties;
 
 /**
  * Created by xiaoliang
@@ -28,34 +23,37 @@ public class PersistentWordCount {
 
 
     public static void main(String[] args) throws Exception {
-        Properties properties = new Properties();
-        properties.put("hadoop.hbase.conf.path","E:/git-repos/storm-demos/hbase-demo/src/main/resources/");
-
         Config config = new Config();
 
         WordSpout spout = new WordSpout();
         WordCounter bolt = new WordCounter();
-        HbaseFilterLogCommBolt hbase = new HbaseFilterLogCommBolt();
-        TestBolt test = new TestBolt();
+
+        SimpleHBaseMapper mapper = new SimpleHBaseMapper()
+                .withRowKeyField("word")
+                .withColumnFields(new Fields("word"))
+                .withCounterFields(new Fields("count"))
+                .withColumnFamily("cf");
+
+        HBaseBolt hbase = new HBaseBolt("WordCount", mapper);
 
         // wordSpout ==> countBolt ==> HBaseBolt
         TopologyBuilder builder = new TopologyBuilder();
 
-        builder.setSpout(WORD_SPOUT, spout, 3);
-        builder.setBolt(COUNT_BOLT, bolt, 3).localOrShuffleGrouping(WORD_SPOUT);
-        builder.setBolt(HBASE_BOLT, hbase, 3).fieldsGrouping(COUNT_BOLT, new Fields("md5"));
-        builder.setBolt("test", test, 3).localOrShuffleGrouping(HBASE_BOLT);
-
+        builder.setSpout(WORD_SPOUT, spout, 1);
+        builder.setBolt(COUNT_BOLT, bolt, 1).shuffleGrouping(WORD_SPOUT);
+        builder.setBolt(HBASE_BOLT, hbase, 1).fieldsGrouping(COUNT_BOLT, new Fields("word"));
 
         if (args.length == 0) {
             LocalCluster cluster = new LocalCluster();
             cluster.submitTopology("test", config, builder.createTopology());
+//            Thread.sleep(10000);
+//            cluster.killTopology("test");
+//            cluster.shutdown();
+//            System.exit(0);
         } else {
             config.setNumWorkers(3);
-            StormSubmitter.submitTopology("test", config, builder.createTopology());
+            StormSubmitter.submitTopology(args[0], config, builder.createTopology());
         }
     }
-
-
 
 }
