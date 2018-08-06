@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property>
-        <name>fs.defaultFS</name>
-        <value>hdfs://host190:9000</value>
-    </property>
-    <property>
-        <name>hadoop.tmp.dir</name>
-        <value>/home/hadoop/hadoop/tmpDir/</value>
-        <description>A base for other temporary directories.</description>
-    </property>
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:///data/hadoop/dfs/name</value>
+  </property>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:///data/hadoop/dfs/data</value>
+  </property>
+  <property>
+    <name>dfs.blocksize</name>
+    <value>268435456</value>
+  </property>
+  <property>
+    <name>dfs.namenode.handler.count</name>
+    <value>100</value>
+  </property>
 </configuration>

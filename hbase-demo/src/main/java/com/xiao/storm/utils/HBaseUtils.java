@@ -10,6 +10,7 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.security.User;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hbase.io.compress.Compression.Algorithm;
 
@@ -35,6 +36,16 @@ public class HBaseUtils {
                 config.addResource(new Path(hbasepath, "hbase-site.xml"));
                 config.addResource(new Path(hbasepath, "core-site.xml"));
             }
+            instance = ConnectionFactory.createConnection(config);
+        }
+    }
+
+    public static synchronized void setZk(String zkServer) throws IOException {
+        if (instance == null) {
+            Configuration config = HBaseConfiguration.create();
+            //配置Zookeeper节点
+            config.set("hbase.zookeeper.quorum", zkServer);
+            config.set("zookeeper.znode.parent", "/hbase");
             instance = ConnectionFactory.createConnection(config);
         }
     }
@@ -101,15 +112,16 @@ public class HBaseUtils {
 
     public static void main(String args[]) {
         Map<String,String> conf = new HashMap();
-        conf.put("hadoop.hbase.conf.path","E:\\git-repos\\storm-demos\\hbase-demo\\config\\");
+        conf.put("hadoop.hbase.conf.path","/Users/xiao/workspaces/github-works/storm-demos/hbase-demo/src/main/resources");
 
         String table = "test";
 
         try {
-            HBaseUtils.setUp(conf);
+//            HBaseUtils.setUp(conf);
+            HBaseUtils.setZk("host190:2181,host191:2181,host192:2181");
 
             long start = System.currentTimeMillis();
-            for(int i =0;i<100000;i++){
+            for(int i =0;i<10;i++){
                 String userid = RandomUtil.randomString(10);
                 String key = EncryptMD5.md5(userid);
 
@@ -117,7 +129,7 @@ public class HBaseUtils {
                 Map<String,String> map = new HashMap<String,String>();
                 map.put("logtime", "201622222");
                 if(!is){
-                    HBaseUtils.insertAndUpdate(table,key,"f",map);
+                    HBaseUtils.insertAndUpdate(table,key,"F1",map);
                 }
             }
             long end = System.currentTimeMillis();
