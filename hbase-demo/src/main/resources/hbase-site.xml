@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+  <!--加入tmp自定义目录后，写入目录有权限问题，目前还未解决-->
   <property>
     <name>hbase.tmp.dir</name>
     <value>/data/hbase/hbaseData</value>

@@ -1,6 +1,5 @@
 package com.xiao.storm.trident;
 
-import com.alibaba.fastjson.JSONObject;
 import org.apache.storm.trident.operation.BaseFunction;
 import org.apache.storm.trident.operation.TridentCollector;
 import org.apache.storm.trident.tuple.TridentTuple;
@@ -20,7 +19,6 @@ public class SplitLog extends BaseFunction {
 
     public void execute(TridentTuple tuple, TridentCollector collector) {
         String log = tuple.getString(0);
-        JSONObject obj = JSONObject.parseObject(log);
         logger.info(log);
         collector.emit(new Values("count", log));
 

@@ -1,6 +1,5 @@
 package com.xiao.storm.bolt;
 
-import com.alibaba.fastjson.JSONObject;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -33,7 +32,6 @@ public class SplitLog extends BaseRichBolt {
     @Override
     public void execute(Tuple tuple) {
         String log = tuple.getString(0);
-        JSONObject obj = JSONObject.parseObject(log);
         logger.info(log);
     }
 

@@ -10,13 +10,6 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.listener.KafkaMessageListenerContainer;
-import org.springframework.kafka.listener.MessageListener;
-import org.springframework.kafka.listener.config.ContainerProperties;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,54 +28,54 @@ public class SpringKafkaTest {
     private Object group ="test_spring";
 
 
-    @Test
-    public void testAutoCommit() throws Exception {
-        logger.info("Start auto");
-        ContainerProperties containerProps = new ContainerProperties("topic1", "topic2");
-        KafkaMessageListenerContainer<Integer, String> container = createContainer(containerProps);
-        final CountDownLatch latch = new CountDownLatch(4);
-        containerProps.setMessageListener(new MessageListener<Integer, String>() {
-
-            @Override
-            public void onMessage(ConsumerRecord<Integer, String> message) {
-                logger.info("received: " + message);
-                latch.countDown();
-            }
-
-        });
-        container.setBeanName("testAuto");
-        container.start();
-        Thread.sleep(1000); // wait a bit for the container to start
-        KafkaTemplate<Integer, String> template = createTemplate();
-        template.setDefaultTopic(topic1);
-        template.sendDefault(0, "foo");
-        template.sendDefault(2, "bar");
-        template.sendDefault(0, "baz");
-        template.sendDefault(2, "qux");
-        template.flush();
-        assertTrue(latch.await(60, TimeUnit.SECONDS));
-        container.stop();
-        logger.info("Stop auto");
-
-    }
-
-    private KafkaMessageListenerContainer<Integer, String> createContainer(
-            ContainerProperties containerProps) {
-        Map<String, Object> props = consumerProps();
-        DefaultKafkaConsumerFactory<Integer, String> cf =
-                new DefaultKafkaConsumerFactory<Integer, String>(props);
-        KafkaMessageListenerContainer<Integer, String> container =
-                new KafkaMessageListenerContainer<>(cf, containerProps);
-        return container;
-    }
-
-    private KafkaTemplate<Integer, String> createTemplate() {
-        Map<String, Object> senderProps = senderProps();
-        ProducerFactory<Integer, String> pf =
-                new DefaultKafkaProducerFactory<Integer, String>(senderProps);
-        KafkaTemplate<Integer, String> template = new KafkaTemplate<>(pf);
-        return template;
-    }
+//    @Test
+//    public void testAutoCommit() throws Exception {
+//        logger.info("Start auto");
+//        ContainerProperties containerProps = new ContainerProperties("topic1", "topic2");
+//        KafkaMessageListenerContainer<Integer, String> container = createContainer(containerProps);
+//        final CountDownLatch latch = new CountDownLatch(4);
+//        containerProps.setMessageListener(new MessageListener<Integer, String>() {
+//
+//            @Override
+//            public void onMessage(ConsumerRecord<Integer, String> message) {
+//                logger.info("received: " + message);
+//                latch.countDown();
+//            }
+//
+//        });
+//        container.setBeanName("testAuto");
+//        container.start();
+//        Thread.sleep(1000); // wait a bit for the container to start
+//        KafkaTemplate<Integer, String> template = createTemplate();
+//        template.setDefaultTopic(topic1);
+//        template.sendDefault(0, "foo");
+//        template.sendDefault(2, "bar");
+//        template.sendDefault(0, "baz");
+//        template.sendDefault(2, "qux");
+//        template.flush();
+//        assertTrue(latch.await(60, TimeUnit.SECONDS));
+//        container.stop();
+//        logger.info("Stop auto");
+//
+//    }
+//
+//    private KafkaMessageListenerContainer<Integer, String> createContainer(
+//            ContainerProperties containerProps) {
+//        Map<String, Object> props = consumerProps();
+//        DefaultKafkaConsumerFactory<Integer, String> cf =
+//                new DefaultKafkaConsumerFactory<Integer, String>(props);
+//        KafkaMessageListenerContainer<Integer, String> container =
+//                new KafkaMessageListenerContainer<>(cf, containerProps);
+//        return container;
+//    }
+//
+//    private KafkaTemplate<Integer, String> createTemplate() {
+//        Map<String, Object> senderProps = senderProps();
+//        ProducerFactory<Integer, String> pf =
+//                new DefaultKafkaProducerFactory<Integer, String>(senderProps);
+//        KafkaTemplate<Integer, String> template = new KafkaTemplate<>(pf);
+//        return template;
+//    }
 
     private Map<String, Object> consumerProps() {
         Map<String, Object> props = new HashMap<>();
